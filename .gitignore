@@ -1,0 +1,13 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.streamlit/secrets.toml
+
+chroma_db/
+downloads/
+outputs/
+audio/
+video/
+transcripts/
