@@ -1,8 +1,17 @@
+from dotenv import load_dotenv
+load_dotenv()
 from utils.audio_processor import process_input
 from core.transcriber import transcribe_all
+import os
 
-source = "https://www.youtube.com/watch?v=2jU-mLMV8Vw"
+print("KEY LOADED:", os.getenv("SARVAM_API_KEY"))
+print("CWD", os.getcwd())
+source = "https://www.youtube.com/watch?v=9B3jTauE8Vk"
+langauge = "hinglish"
 
 chunks = process_input(source)
+transcript = transcribe_all(chunks, language=langauge)
 
-print(transcribe_all(chunks))
+
+print("\n== TRANSCRIPT ===\n")
+print(transcript)
