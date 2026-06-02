@@ -3,8 +3,7 @@ from langchain_mistralai import ChatMistralAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableLambda
-
-from core.vector_store import build_vector_store, get_retriever
+from core.vector_store import build_vector_store, load_vector_store, get_retriever
 
 
 def get_llm():
@@ -19,14 +18,8 @@ def format_docs(docs):
     return "\n\n".join([doc.page_content for doc in docs])
 
 
-def build_rag_chain(transcript: str):
-    vector_store = build_vector_store(transcript)
-
-    retriever = get_retriever(vector_store, k=4)
-
-    llm = get_llm()
-
-    prompt = ChatPromptTemplate.from_messages(
+def get_rag_prompt():
+    return ChatPromptTemplate.from_messages(
         [
             (
                 "system",
@@ -38,12 +31,42 @@ If the answer is not found in the context, say:
 
 Always be concise and precise. If quoting someone, mention it clearly.
 
-Context from meeting transcript:
+Context from transcript:
 {context}""",
             ),
             ("human", "{question}"),
         ]
     )
+
+
+def build_rag_chain(transcript: str):
+    vector_store = build_vector_store(transcript)
+
+    retriever = get_retriever(vector_store, k=4)
+
+    llm = get_llm()
+    prompt = get_rag_prompt()
+
+    rag_chain = (
+        {
+            "context": retriever | RunnableLambda(format_docs),
+            "question": RunnablePassthrough(),
+        }
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
+
+    return rag_chain
+
+
+def load_rag_chain():
+    vector_store = load_vector_store()
+
+    retriever = get_retriever(vector_store, k=4)
+
+    llm = get_llm()
+    prompt = get_rag_prompt()
 
     rag_chain = (
         {
