@@ -11,3 +11,4 @@ outputs/
 audio/
 video/
 transcripts/
+vector_db/
