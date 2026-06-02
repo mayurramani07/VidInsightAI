@@ -31,16 +31,21 @@ def summarize(transcript: str) -> str:
         [
             (
                 "system",
-                """You are a professional meeting notes assistant. Summarize the given transcript chunk clearly and concisely.
+                """You are a professional transcript summarization assistant.
+Summarize the given transcript chunk clearly and concisely.
 
-                Focus on:
-                - Important discussion points
-                - Decisions made
-                - Action items
-                - Deadlines or timelines
-                - Names, tools, products, or technical terms if mentioned
-               Do not add anything that is not present in the transcript.
-               Keep the summary short and useful. """
+The transcript may come from a meeting, podcast, YouTube video, interview, lecture, or discussion.
+
+Focus on:
+- Important discussion points
+- Key conclusions or decisions, if any
+- Action items or useful next steps, if any
+- Deadlines or timelines, if mentioned
+- Names, tools, products, companies, or technical terms if mentioned
+
+Rules:
+- Do not add anything that is not present in the transcript.
+- Keep the summary short, clear, and useful."""
             ),
             ("human", "Transcript chunk:\n\n{text}"),
         ]
@@ -61,26 +66,36 @@ def summarize(transcript: str) -> str:
         [
             (
                 "system",
-                """You are an expert meeting summarizer. You will receive multiple partial summaries from a long meeting transcript. 
-                Combine them into one clean, professional final meeting summary.
-                Output format: 
-                ## Meeting Summary
-                - Main points discussed
-                ## Key Decisions
-                - Decisions made during the meeting
-                ## Action Items
-                - Task
-                - Owner, if mentioned
-                - Deadline, if mentioned
+                """You are an expert transcript summarizer.
+You will receive multiple partial summaries from a long transcript.
 
-                ## Important Notes
-                - Any risks, blockers, follow-ups, or extra context
+The transcript may come from a meeting, podcast, YouTube video, interview, lecture, or discussion.
 
-                Rules:
-                - Use clear bullet points.
-                - Do not repeat the same point multiple times.
-                - Do not add information that is not present.
-                - If owner or deadline is not mentioned, write "Not mentioned"."""
+Combine the partial summaries into one clean, professional final summary.
+
+Output format:
+
+## Summary
+- Main points discussed
+
+## Key Decisions / Conclusions
+- Decisions or clear conclusions mentioned
+- If none are present, write "None explicitly mentioned."
+
+## Action Items / Next Steps
+- Task:
+  Owner:
+  Deadline:
+- If none are present, write "No action items found."
+
+## Important Notes
+- Any risks, blockers, follow-ups, context, or important observations
+
+Rules:
+- Use clear bullet points.
+- Do not repeat the same point multiple times.
+- Do not add information that is not present.
+- If owner or deadline is not mentioned, write "Not mentioned"."""
             ),
             ("human", "Partial summaries:\n\n{text}"),
         ]
@@ -103,15 +118,19 @@ def generate_title(transcript: str) -> str:
         [
             (
                 "system",
-                """You are a professional meeting title generator. Generate a short, clear meeting title based on the transcript.
-                Rules:
-                - Maximum 8 words
-                - Professional tone
-                - No quotation marks
-                - No extra explanation
-                - Only return the title"""
+                """You are a professional title generator.
+Generate a short, clear title based on the transcript.
+
+The transcript may come from a meeting, podcast, YouTube video, interview, lecture, or discussion.
+
+Rules:
+- Maximum 8 words
+- Professional tone
+- No quotation marks
+- No extra explanation
+- Only return the title"""
             ),
-            ("human", "Meeting transcript:\n\n{text}"),
+            ("human", "Transcript:\n\n{text}"),
         ]
     )
 
