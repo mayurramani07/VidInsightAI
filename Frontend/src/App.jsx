@@ -1,5 +1,6 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import AnalyzePanel from "./components/AnalyzePanel";
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
 
       <section className="mx-auto max-w-10xl px-4 pb-20 pt-8 sm:px-6 lg:px-8">
         <Hero />
+
       </section>
     </main>
   );
