@@ -4,6 +4,7 @@ import Hero from "./components/Hero";
 import AnalyzePanel from "./components/AnalyzePanel";
 import PipelineStatus from "./components/PipelineStatus";
 import ResultDashboard from "./components/ResultDashboard";
+import ChatBox from "./components/ChatBox";
 import { analyzeVideo } from "./api/api";
 
 const initialSteps = [
@@ -88,6 +89,7 @@ function App() {
 
             <ResultDashboard result={result} loading={loading} />
 
+            {result && <ChatBox />}
           </div>
         </div>
       </section>
