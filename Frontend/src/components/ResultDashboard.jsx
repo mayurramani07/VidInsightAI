@@ -51,7 +51,7 @@ function LoadingState() {
         Analysing your video...
       </h2>
 
-      <p className="mt-3 max-w-md text-sm leading-7 text-white/50">
+      <p className="mt-3 max-w-md text-sm leading-5 text-white/50">
         Processing audio, generating transcript, creating summary and building
         your RAG chain.
       </p>

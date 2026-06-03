@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import AnalyzePanel from "./components/AnalyzePanel";
@@ -22,20 +22,79 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const timersRef = useRef([]);
+
   const updateStep = (key, status) => {
     setSteps((prev) =>
       prev.map((step) => (step.key === key ? { ...step, status } : step))
     );
   };
 
-  const simulateProgress = async () => {
-    const order = ["audio", "transcript", "title", "summary", "extract", "rag"];
+  const resetTimers = () => {
+    timersRef.current.forEach((timer) => clearTimeout(timer));
+    timersRef.current = [];
+  };
 
-    for (const key of order) {
-      updateStep(key, "active");
-      await new Promise((resolve) => setTimeout(resolve, 450));
-      updateStep(key, "done");
-    }
+  const startLiveProgress = () => {
+    resetTimers();
+
+    setSteps(initialSteps);
+
+    updateStep("audio", "active");
+
+    timersRef.current.push(
+      setTimeout(() => {
+        updateStep("audio", "done");
+        updateStep("transcript", "active");
+      }, 1500)
+    );
+
+    timersRef.current.push(
+      setTimeout(() => {
+        updateStep("transcript", "done");
+        updateStep("title", "active");
+      }, 4000)
+    );
+
+    timersRef.current.push(
+      setTimeout(() => {
+        updateStep("title", "done");
+        updateStep("summary", "active");
+      }, 5500)
+    );
+
+    timersRef.current.push(
+      setTimeout(() => {
+        updateStep("summary", "done");
+        updateStep("extract", "active");
+      }, 7500)
+    );
+
+    timersRef.current.push(
+      setTimeout(() => {
+        updateStep("extract", "done");
+        updateStep("rag", "active");
+      }, 9500)
+    );
+  };
+
+  const markAllDone = () => {
+    setSteps((prev) =>
+      prev.map((step) => ({
+        ...step,
+        status: "done",
+      }))
+    );
+  };
+
+  const markFailed = () => {
+    setSteps((prev) =>
+      prev.map((step) =>
+        step.status === "active"
+          ? { ...step, status: "pending" }
+          : step
+      )
+    );
   };
 
   const handleAnalyze = async ({ source, language }) => {
@@ -43,20 +102,24 @@ function App() {
       setLoading(true);
       setError("");
       setResult(null);
-      setSteps(initialSteps);
 
-      const progressPromise = simulateProgress();
+      startLiveProgress();
 
       const data = await analyzeVideo({
         source,
         language,
       });
 
-      await progressPromise;
+      resetTimers();
+      markAllDone();
 
       setResult(data);
     } catch (err) {
       console.error(err);
+
+      resetTimers();
+      markFailed();
+
       setError(
         err?.response?.data?.detail ||
           err?.message ||
@@ -71,7 +134,7 @@ function App() {
     <main className="min-h-screen overflow-hidden bg-[#07070c] text-white">
       <Navbar />
 
-      <section className="mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-10xl px-4 pb-20 pt-10 sm:px-6 lg:px-8">
         <Hero />
 
         <div className="mt-10 grid gap-6 lg:grid-cols-[430px_1fr]">

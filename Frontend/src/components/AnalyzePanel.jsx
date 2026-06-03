@@ -46,7 +46,7 @@ function AnalyzePanel({ onAnalyze, loading }) {
             value={source}
             onChange={(e) => setSource(e.target.value)}
             placeholder="https://youtube.com/watch?v=... or C:/video.mp4"
-            className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-4 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#9f67ff]"
+            className="w-full rounded-2xl border border-white/10 bg-black/30 px-2 py-4 text-sm text-white outline-none transition placeholder:text-white/25 focus:border-[#9f67ff]"
           />
         </label>
 
@@ -59,7 +59,7 @@ function AnalyzePanel({ onAnalyze, loading }) {
           <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
-            className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-4 text-sm text-white outline-none transition focus:border-[#9f67ff]"
+            className="w-full rounded-2xl border border-white/10 bg-black/30 px-2 py-4 text-sm text-white outline-none transition focus:border-[#9f67ff]"
           >
             <option className="bg-[#101018]" value="english">
               English
