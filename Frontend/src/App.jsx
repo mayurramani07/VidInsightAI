@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import AnalyzePanel from "./components/AnalyzePanel";
 import PipelineStatus from "./components/PipelineStatus";
+import ResultDashboard from "./components/ResultDashboard";
 import { analyzeVideo } from "./api/api";
 
 const initialSteps = [
@@ -84,6 +85,8 @@ function App() {
                 {error}
               </div>
             )}
+
+            <ResultDashboard result={result} loading={loading} />
 
           </div>
         </div>
