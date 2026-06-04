@@ -1,28 +1,30 @@
-import os
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+
 from dotenv import load_dotenv
+
+from utils.audio_processor import process_input
+from core.transcriber import transcribe_all
+from core.summarize import summarize, generate_title
+from core.extractor import (
+    extract_action_items,
+    extract_key_decisions,
+    extract_questions,
+)
+from core.rag_engine import build_rag_chain, ask_question
 
 
 load_dotenv()
 
-app = FastAPI(
-    title="VidInsight AI API",
-    description="Backend API for video analysis and RAG chat",
-    version="1.0.0",
-)
-
-allowed_origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://vidinsightai.vercel.app",
-]
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -50,28 +52,10 @@ def home():
     }
 
 
-@app.get("/health")
-def health():
-    return {
-        "status": "ok"
-    }
-
-
 @app.post("/api/analyze")
 def analyze_video(request: AnalyzeRequest):
     try:
         print("Starting AI Video Assistant API pipeline")
-
-        # Heavy imports inside endpoint
-        from utils.audio_processor import process_input
-        from core.transcriber import transcribe_all
-        from core.summarize import summarize, generate_title
-        from core.extractor import (
-            extract_action_items,
-            extract_key_decisions,
-            extract_questions,
-        )
-        from core.rag_engine import build_rag_chain
 
         chunks = process_input(request.source)
 
@@ -108,8 +92,6 @@ def analyze_video(request: AnalyzeRequest):
 @app.post("/api/chat")
 def chat_with_video(request: ChatRequest):
     try:
-        from core.rag_engine import ask_question
-
         rag_chain = rag_chain_store.get("rag_chain")
 
         if rag_chain is None:
