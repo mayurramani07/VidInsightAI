@@ -4,7 +4,12 @@ from langchain_mistralai import ChatMistralAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough, RunnableLambda
-from core.vector_store import build_vector_store, load_vector_store, get_retriever
+
+from core.vector_store import (
+    build_vector_store,
+    load_vector_store,
+    get_retriever
+)
 
 
 def get_llm():
@@ -13,7 +18,6 @@ def get_llm():
         mistral_api_key=os.getenv("MISTRAL_API_KEY"),
         temperature=0.3,
     )
-
 
 def format_docs(docs):
     return "\n\n".join([doc.page_content for doc in docs])
@@ -33,12 +37,11 @@ If the answer is not found in the context, say:
 Always be concise and precise. If quoting someone, mention it clearly.
 
 Context from transcript:
-{context}""",
+{context}"""
             ),
             ("human", "{question}"),
         ]
     )
-
 
 def get_rerank_prompt():
     return ChatPromptTemplate.from_messages(
@@ -58,7 +61,7 @@ Rules:
 - If multiple chunks are useful, include multiple chunks.
 
 Example output:
-1, 3, 5""",
+1, 3, 5"""
             ),
             (
                 "human",
@@ -73,7 +76,6 @@ Return the best chunk numbers:""",
         ]
     )
 
-
 def parse_selected_indexes(output: str, max_index: int):
     numbers = re.findall(r"\d+", output)
 
@@ -86,7 +88,6 @@ def parse_selected_indexes(output: str, max_index: int):
             selected_indexes.append(index)
 
     return selected_indexes
-
 
 def rerank_docs(question: str, docs: list, llm, top_n: int = 6):
     if not docs:
@@ -116,7 +117,6 @@ def rerank_docs(question: str, docs: list, llm, top_n: int = 6):
     selected_docs = [docs[i] for i in selected_indexes]
 
     return selected_docs[:top_n]
-
 
 def build_rag_chain(transcript: str):
     vector_store = build_vector_store(transcript)
@@ -150,7 +150,6 @@ def build_rag_chain(transcript: str):
 
     return rag_chain
 
-
 def load_rag_chain():
     vector_store = load_vector_store()
 
@@ -182,7 +181,6 @@ def load_rag_chain():
     )
 
     return rag_chain
-
 
 def ask_question(rag_chain, question: str) -> str:
     print(f"Question: {question}")

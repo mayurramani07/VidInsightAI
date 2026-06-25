@@ -32,6 +32,7 @@ def summarize(transcript: str) -> str:
             (
                 "system",
                 """You are a professional transcript summarization assistant.
+
 Summarize the given transcript chunk clearly and concisely.
 
 The transcript may come from a meeting, podcast, YouTube video, interview, lecture, or discussion.
@@ -67,6 +68,7 @@ Rules:
             (
                 "system",
                 """You are an expert transcript summarizer.
+
 You will receive multiple partial summaries from a long transcript.
 
 The transcript may come from a meeting, podcast, YouTube video, interview, lecture, or discussion.
@@ -95,7 +97,8 @@ Rules:
 - Use clear bullet points.
 - Do not repeat the same point multiple times.
 - Do not add information that is not present.
-- If owner or deadline is not mentioned, write "Not mentioned"."""
+- If owner or deadline is not mentioned, write "Not mentioned.
+"""
             ),
             ("human", "Partial summaries:\n\n{text}"),
         ]
@@ -119,6 +122,7 @@ def generate_title(transcript: str) -> str:
             (
                 "system",
                 """You are a professional title generator.
+
 Generate a short, clear title based on the transcript.
 
 The transcript may come from a meeting, podcast, YouTube video, interview, lecture, or discussion.
